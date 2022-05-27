@@ -2,8 +2,7 @@ import Constants as keys
 from telegram.ext import *
 from telegram import *
 import json
-
-print('Бот запускається...')
+import re
 
 
 def read_json(filepath):
@@ -28,12 +27,15 @@ def handle_massage(update, context):
     buttons = read_json("Buttons.json")
     user_massage = str(update.message.text).lower()
 
-    if user_massage in ('Студент, студент'):
+    if user_massage in ('студент'):
         update.message.reply_text('Вітаю, я радий що ще одна людина ступила на шлях кар\'єрного зростання.',
                                   reply_markup=ReplyKeyboardMarkup(buttons["student_choice"], one_time_keyboard=True))
 
-    elif user_massage in ('Роботодавець, роботодавець', 'Партнер', 'партнер'):
+    elif user_massage in ('роботодавець', 'партнер'):
         update.message.reply_text('Вітаю, що саме вас цікавить?')
+
+    elif len(re.findall(r'.*ваканс*', user_massage)) >= 1:
+        update.message.reply_text('Якби ж я це знав....')
 
     else:
         update.message.reply_text('Я вас не розумію... Спробуйте інший запит')
@@ -60,4 +62,5 @@ def main():
 
 
 if __name__ == '__main__':
+    print('Бот запускається...')
     main()
