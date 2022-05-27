@@ -32,10 +32,14 @@ def handle_massage(update, context):
                                   reply_markup=ReplyKeyboardMarkup(buttons["student_choice"], one_time_keyboard=True))
 
     elif user_massage in ('роботодавець', 'партнер'):
-        update.message.reply_text('Вітаю, що саме вас цікавить?')
+        update.message.reply_text('Вітаю, що саме вас цікавить?',
+                                  reply_markup=ReplyKeyboardMarkup(buttons["employers_choice"]))
 
     elif len(re.findall(r'.*ваканс*', user_massage)) >= 1:
         update.message.reply_text('Якби ж я це знав....')
+
+    elif user_massage == "інше":
+        update.message.reply_text('Напишіть що вас цікавить.')
 
     else:
         update.message.reply_text('Я вас не розумію... Спробуйте інший запит')
