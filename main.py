@@ -5,14 +5,17 @@ from telegram import *
 import json
 import re
 
+# This function reads json file.
 def read_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as file:
         data = json.load(file)
         return data
 
-
+# This function handle /start command.
 def start_command(update, context):
+    # Creates dict from Buttons.json
     buttons = read_json("Buttons.json")
+    # Replies to command and send first message to user and gives user first choice.
     update.message.reply_text('Привіт! Я бот-помічник від Stud-point. \n'
                               'Я створений для того, щоб відповідати на найпоширенші питання. \n'
                               'Будь-ласка оберіть свою роль ⬇',
@@ -20,33 +23,50 @@ def start_command(update, context):
                                                                            one_time_keyboard=True,
                                                                            resize_keyboard=True))
 
-
+# This function handle /help command.
 def help_command(update, context):
     update.message.reply_text('Попросіть когось про допомогу!')
 
-
+# This function resend contact to manager.
 def contact_callback(update, context):
+    # Creates dict from Constants.json
     constants = read_json("Constants.json")
+    # Opens and reads file with last text message of user
     with open('temp.txt', 'r') as temp:
         text = temp.read()
+    # Gets contact info.
     contact = update.effective_message.contact
+    # Sends to manager last text message of user and its phone number with name.
     context.bot.send_message(chat_id=constants["manager_id"], text=text)
     context.bot.send_contact(chat_id=constants["manager_id"], phone_number=contact.phone_number,
                              first_name=contact.first_name)
+    # Sends message to user that his contact has been received by manager.
     update.message.reply_text("Дякую! Очікуйте на відповідь від оператора.")
 
-
+# This function resend users file to manager.
 def resume_callback(update, context):
+    # Creates dict from Constants.json.
     constants = read_json("Constants.json")
+    # Get file from the user message.
     file = update.effective_message.document
+    # Send users file(probably resume) to manager.
     context.bot.send_document(chat_id=constants["manager_id"], document=file)
+    # Sends message to user that his resume has been received by manager.
     update.message.reply_text("Дякую! Ваше резюме отримано.")
 
-
+# This function handles user's messages.
 def handle_massage(update, context):
+    # Creates dict from Buttons.json
     buttons = read_json("Buttons.json")
+    # Creates dict from Links.json
     links = read_json("Links.json")
+    # Gets text from user message and lowercase it.
     user_massage = str(update.message.text).lower()
+
+    # Later in this function every if/elif statement correspond to specific user message,
+    # and code bot`s reaction on it.
+    # else statement corresponds to messages that are not provided with if/elif statements.
+
     if user_massage == 'студент':
         update.message.reply_text('Вітаю, я радий що ще одна людина ступила на шлях кар\'єрного зростання.',
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["student_choice"],
@@ -184,15 +204,20 @@ def handle_massage(update, context):
     else:
         update.message.reply_text('Я вас не розумію... Спробуйте інший запит')
 
-
+# This function handles errors in bot`s workflow.
 def error(update, context):
     print("Update {} caused error {}".format(update, context.error))
 
 
 def main():
+    # Creates dict from Constants.json
     constant = read_json("Constants.json")
+    # Creates Updater
     updater = Updater(constant["API_KEY"], use_context=True)
+    # Created dispatcher
     dp = updater.dispatcher
+
+    # Creates handlers for commands and different types user messages.
 
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler('help', help_command))
@@ -202,9 +227,9 @@ def main():
     dp.add_handler(MessageHandler(Filters.contact, contact_callback))
 
     dp.add_handler(MessageHandler(Filters.document, resume_callback))
-
+    # Creates handler for errors.
     dp.add_error_handler(error)
-
+    # Starts the bot.
     updater.start_polling()
     print('Бот Готовий!')
     updater.idle()
