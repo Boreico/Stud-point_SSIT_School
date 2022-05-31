@@ -17,7 +17,7 @@ def start_command(update, context):
     buttons = read_json("Buttons.json")
     # Replies to command and send first message to user and gives user first choice.
     update.message.reply_text('Привіт! Я бот-помічник від Stud-point. \n'
-                              'Я створений для того, щоб відповідати на найпоширенші питання. \n'
+                              'Я створений для того, щоб відповідати на найпоширеніші питання. \n'
                               'Будь-ласка оберіть свою роль ⬇',
                               reply_markup=ReplyKeyboardMarkup.from_column(buttons["first_choice"],
                                                                            one_time_keyboard=True,
@@ -25,7 +25,18 @@ def start_command(update, context):
 
 # This function handle /help command.
 def help_command(update, context):
-    update.message.reply_text('Попросіть когось про допомогу!')
+    # Creates dict from Buttons.json
+    buttons = read_json("Buttons.json")
+    update.message.reply_text('Цим чатботом потрібно крористуватися через кнопки знизу ⬇\n'
+                              'Нажимайте те що вам потрібно і слідуйте вказівкам бота.\n'
+                              'Спочатку спробуйте обрати свою роль (студет, роботодавець чи партнер)\n'
+                              'Якщо ви сумніваєтесь, не бійтесь нажимати на кнопки,'
+                              ' завжди можна повернутись на початок.\n'
+                              'Також можете нажати на "Інше" і залишити нам ваш контакт,'
+                              ' щоб з вами зв\'язався менеджер.\n',
+                              reply_markup=ReplyKeyboardMarkup.from_column(buttons["first_choice"],
+                                                                           one_time_keyboard=True,
+                                                                           resize_keyboard=True))
 
 # This function resend contact to manager.
 def contact_callback(update, context):
