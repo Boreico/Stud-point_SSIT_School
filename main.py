@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
+
 from telegram.ext import *
 from telegram import *
 import json
 import re
-
 
 def read_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as file:
@@ -63,8 +64,8 @@ def handle_massage(update, context):
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["partner_choice"],
                                                                                one_time_keyboard=True))
 
-    elif user_massage in (
-    "співпраця", "розмістити рекламу", "проект під ключ", "oплата курсу", "брендинг консультація", "зв'язатись з нами"):
+    elif user_massage in ("співпраця", "розмістити рекламу", "проєкт під ключ",
+                          "брендинг консультація", "зв'язатись з нами", "оплата курсів"):
         reply_markup = ReplyKeyboardMarkup([[KeyboardButton(buttons['get_contact'][0], request_contact=True),
                                              KeyboardButton(buttons['get_contact'][1])]],
                                            one_time_keyboard=True, resize_keyboard=True)
@@ -83,6 +84,11 @@ def handle_massage(update, context):
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["branding"],
                                                                                one_time_keyboard=True,
                                                                                resize_keyboard=True))
+    elif user_massage == "кадрові пропозиції":
+        update.message.reply_text("Має видавати до 20 випусників по школам....")
+
+    elif user_massage == "відгуки роботодавців":
+        update.message.reply_text("Має видавати відгуки роботодавців....")
 
     elif user_massage == "дослідження":
         update.message.reply_text("Наше <b><a href={link}>дослідження</a></b>".format(link=links["research"]),
@@ -94,41 +100,74 @@ def handle_massage(update, context):
                                                                                one_time_keyboard=True,
                                                                                resize_keyboard=True))
 
-
     elif len(re.findall(r'.*ваканс*', user_massage)) >= 1 or user_massage == "кар'єра":
         update.message.reply_text('На данний момент доступні наступні вакансії.... (їх треба десь взяти)',
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["resume"],
                                                                                one_time_keyboard=True,
                                                                                resize_keyboard=True))
+    elif user_massage == "загальні питання":
+        update.message.reply_text("Оберіть що вас цікавить ⬇",
+                                  reply_markup=ReplyKeyboardMarkup.from_column(buttons["general_q"],
+                                                                               one_time_keyboard=True,
+                                                                               resize_keyboard=True))
+
+    elif user_massage == "участь в it school":
+        update.message.reply_text("Двотижневий інтенсив у форматі вебінарів з вирішенням практичного кейсу."
+                                  " Знайомся з професіями у сфері ІТ, знаходь свою та отримуй джоб-оффер або"
+                                  " запрошення на стажування вже за 14 днів.\n"
+                                  "[Детальніше]({link1})\n"
+                                  "[Зареєструватись]({link2})".format(link1=links["it_school"], link2=links["it_school_enroll"]),
+                                  parse_mode=ParseMode.MARKDOWN)
+    elif user_massage == "участь в sales school":
+        update.message.reply_text("Освітній проєкт з розвитку молодих українських талановитих менеджерів з продажів,"
+                                  " яких будуть розвивати 20 експертів ринку із 10+ компаній."
+                                  " Роботодавці можуть обрати кращих кандидатів, надати спікерів, розробити кейс, ін.\n"
+                                  "[Детальніше]({link1})\n"
+                                  "[Зареєструватись]({link2})".format(link1=links["sales_school"],
+                                                                      link2=links["sales_school_enroll"]),
+                                  parse_mode=ParseMode.MARKDOWN)
+
+
     elif user_massage == "актуальні курси":
         update.message.reply_text('Оберіть що вас цікавить ⬇',
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["courses"],
                                                                                one_time_keyboard=True,
                                                                                resize_keyboard=True))
     elif user_massage == "marketing school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["marketing_school"]),
+        update.message.reply_text("Інтенсив, який з джуна зробить справжнього гуру маркетингу."
+                                  " Must have скіли для маркетолога-початківця,"
+                                  " розбір практичних кейсів топових компаній та"
+                                  " всі тренди сфери у 20 лекціях від профi.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["marketing_school"]),
                                   parse_mode=ParseMode.HTML)
     elif user_massage == "finance & audit school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["finance_school"]),
+        update.message.reply_text("Прокачай у собі навички фінансиста і аудитора лише за 14 днів!"
+                                  " З цього відеокурсу ти дізнаєшся останні тенденції фінансів та аудиту"
+                                  " і разом з кращими спеціалістами розберешся навіть у найбільш хардових темах.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["finance_school"]),
                                   parse_mode=ParseMode.HTML)
     elif user_massage == "hr & recruitment school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["HR_school"]),
+        update.message.reply_text("Тут все про HR сферу: від азів до глибоких деталей. Це супер-iнтенсив з повним"
+                                  " зануренням у професію HR-менеджера.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["HR_school"]),
                                   parse_mode=ParseMode.HTML)
     elif user_massage == "pm & leader school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["PM_school"]),
+        update.message.reply_text("Твій ментор і мотиватор на шляху до кар'єри project-менеджера. Пізнай секрети"
+                                  " менеджменту проєктів від ідеї до успішної реалізації.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["PM_school"]),
                                   parse_mode=ParseMode.HTML)
     elif user_massage == "digital school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["digital_school"]),
+        update.message.reply_text("Мегакорисний курс для тих, хто хоче працювати в сфері діджитал-маркетингу та"
+                                  " вміти легко цифровізувати будь-який бізнес.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["digital_school"]),
                                   parse_mode=ParseMode.HTML)
 
     elif user_massage == "startup school":
-        update.message.reply_text("Тут має бути опис школи...\n"
-                                  "<b><a href={link}>дізнатись більше</a></b>".format(link=links["startup_school"]),
+        update.message.reply_text("Усе, що треба знати стартаперу в одному відеокурсі."
+                                  " Ідеальна добірка експертної думки, завдяки якій ти"
+                                  " навчишся керувати власним бізнесом з мінімальним бюджетом та зрозумієш,"
+                                  " як побудувати правильну стратегію розвитку свого проєкту.\n"
+                                  "<b><a href={link}>Дізнатись більше</a></b>".format(link=links["startup_school"]),
                                   parse_mode=ParseMode.HTML)
 
     elif user_massage == "відправити резюме":
