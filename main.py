@@ -27,7 +27,7 @@ def start_command(update, context):
 def help_command(update, context):
     # Creates dict from Buttons.json
     buttons = read_json("Buttons.json")
-    update.message.reply_text('Цим чатботом потрібно крористуватися через кнопки знизу ⬇\n'
+    update.message.reply_text('Цим чатботом потрібно користуватися через кнопки знизу ⬇\n'
                               'Нажимайте те що вам потрібно і слідуйте вказівкам бота.\n'
                               'Спочатку спробуйте обрати свою роль (студет, роботодавець чи партнер)\n'
                               'Якщо ви сумніваєтесь, не бійтесь нажимати на кнопки,'
@@ -206,7 +206,7 @@ def handle_massage(update, context):
 
     elif user_massage == "на початок":
         update.message.reply_text('Привіт! Я бот-помічник від Stud-point. \n'
-                                  'Я створений для того, щоб відповідати на найпоширенші питання. \n'
+                                  'Я створений для того, щоб відповідати на найпоширеніші питання. \n'
                                   'Будь-ласка оберіть свою роль ⬇',
                                   reply_markup=ReplyKeyboardMarkup.from_column(buttons["first_choice"],
                                                                                one_time_keyboard=True,
